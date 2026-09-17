@@ -432,26 +432,26 @@
     function renderStep2(app) {
       app.innerHTML = `
         ${playerHeader()}
-        <h2>Tercera pista</h2>
+        <h2>Segunda pista</h2>
         <p><a href="${GOOGLE_SEARCH_URL}" target="_blank" rel="noopener noreferrer">A veces, si quieres avanzar, has de cambiar las cosas.</a></p>
         ${answerBox("communityAnswer", "Respuesta")}
         ${progressMarkup()}
       `;
       bindAnswer("communityAnswer", "comunidad", () => {
-        setStep(3);
+        setStep(2);
       }, "Ese no es el resultado.", "");
     }
 
     function renderStep3(app) {
       app.innerHTML = `
         ${playerHeader()}
-        <h2>Cuarta pista</h2>
+        <h2>Tercera pista</h2>
         <p><a href="${GOOGLE_DOC_URL}" target="_blank" rel="noopener noreferrer">${GOOGLE_DOC_URL}</a></p>
         ${answerBox("volarAnswer", "Respuesta")}
         ${progressMarkup()}
       `;
       bindAnswer("volarAnswer", "volar", () => {
-        setStep(4);
+        setStep(3);
       }, "No es esa.", "");
     }
 
@@ -469,7 +469,7 @@
         ${progressMarkup()}
       `;
       bindAnswer("finalAnswer", "coda", () => {
-        setStep(5);
+        setStep(4);
       }, "Casi.", "");
     }
 
