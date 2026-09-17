@@ -269,9 +269,10 @@
     const GITHUB_URL = "https://github.com/WillyOP12/0414";
     const GOOGLE_DOC_URL = "https://docs.google.com/document/d/1WfkiPf9Flhk_duasYlVIWGof1qdIpn6MSIQJaZHysR4/edit?usp=sharing";
 
-    // Base64 (UTF-8) del texto exacto solicitado.
-    const BASE64_CLUE = "OMKyLS1BIHZlY2VzIGhlbW9zIGRlIGFwcmVuZGVyIGEgZXN0YWJsZWNlciB1bmEgYmFzZQ==";
-    const BASE64_ANSWER = "8²--A veces hemos de aprender a establecer una base";
+    // La página muestra una pista en texto que apunta a Base64: "8²" = 64 y "base".
+    // La cadena codificada, al decodificarla en Base64, da la respuesta: "LIBERTAD".
+    const BASE64_CLUE = "TElCRVJUQUQ=";
+    const FIRST_ANSWER = "libertad";
 
     // Comando para ejecutar en la consola del navegador.
     const CONSOLE_COMMAND = `console.log(String.fromCharCode(99,111,109,117,110,105,100,97,100))`;
@@ -416,19 +417,22 @@
       app.innerHTML = `
         ${playerHeader()}
         <h2>Primera pista</h2>
-        <p>Hay un mensaje protegido con un sistema que probablemente ya has visto antes.</p>
+        <p>Hay un mensaje protegido.</p>
+        <div class="hint">
+          <strong>8²--A veces hemos de aprender a establecer una <b>base</b></strong>
+        </div>
         <div class="cipher">${BASE64_CLUE}</div>
-        <p class="muted small">Descifra el mensaje y escribe exactamente lo que aparece.</p>
-        ${answerBox("base64Answer", "Texto descifrado")}
+        <p class="muted small">La frase de arriba te indica cómo debes leer la cadena.</p>
+        ${answerBox("base64Answer", "Palabra que te pide la pista")}
         ${progressMarkup()}
       `;
-      bindAnswer("base64Answer", normalize(BASE64_ANSWER), () => {
+      bindAnswer("base64Answer", FIRST_ANSWER, () => {
         setStep(1);
-      }, "No parece ser esa. Comprueba la decodificación.", `
+      }, "No es esa. Descifra la cadena y piensa qué palabra te está indicando la pista.", `
         <div class="hint">
-          Bien. Ahora busca lo que acabas de descubrir:
+          Correcto. Ahora busca la siguiente pista en el:
           <a href="${GITHUB_URL}" target="_blank" rel="noopener noreferrer">repositorio 0414</a>.
-          <div class="small muted" style="margin-top:8px">Busca el commit cuyo título sea la palabra que necesitas.</div>
+          <div class="small muted" style="margin-top:8px">Busca el commit cuyo título sea la palabra que acabas de encontrar.</div>
         </div>
       `);
     }
