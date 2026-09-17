@@ -270,7 +270,7 @@
     const GOOGLE_DOC_URL = "https://docs.google.com/document/d/1WfkiPf9Flhk_duasYlVIWGof1qdIpn6MSIQJaZHysR4/edit?usp=sharing";
 
     // La página muestra una pista en texto que apunta a Base64: "8²" = 64 y "base".
-    // La cadena codificada, al decodificarla en Base64, da la respuesta: "LIBERTAD".
+    // La cadena codificada, al decodificarla en Base64, da la URL del repositorio de GitHub.
     const BASE64_CLUE = "aHR0cHM6Ly9naXRodWIuY29tL1dpbGx5T1AxMi8wNDE0";
     const FIRST_ANSWER = "libertad";
 
@@ -428,77 +428,52 @@
       `;
       bindAnswer("base64Answer", FIRST_ANSWER, () => {
         setStep(1);
-      }, "No es esa. Descifra la cadena y piensa qué palabra te está indicando la pista.", `
-        <div class="hint">
-          Correcto. Ahora busca la siguiente pista en el:
-          <a href="${GITHUB_URL}" target="_blank" rel="noopener noreferrer">repositorio 0414</a>.
-          <div class="small muted" style="margin-top:8px">Busca el commit cuyo título sea la palabra que acabas de encontrar.</div>
-        </div>
-      `);
+      }, "No es esa. Descifra la cadena y sigue la pista.", "");
     }
 
     function renderStep1(app) {
       app.innerHTML = `
         ${playerHeader()}
         <h2>Segunda pista</h2>
-        <p>En el repositorio hay más de una cosa que mirar.</p>
-        <p class="muted">El título de un commit contiene la palabra que buscas.</p>
+        <p>Busca en el repositorio el título del commit que contiene la palabra que necesitas.</p>
         ${answerBox("libertadAnswer", "Palabra encontrada")}
         ${progressMarkup()}
       `;
       bindAnswer("libertadAnswer", "libertad", () => {
         setStep(2);
-      }, "No es esa. Mira el título del commit.", `
-        <div class="hint">
-          <strong>A veces, si quieres avanzar, has de cambiar las cosas.</strong>
-          <div style="margin-top:12px">
-            <a class="button secondary" href="${GOOGLE_SEARCH_URL}" target="_blank" rel="noopener noreferrer">Buscar la siguiente pista</a>
-          </div>
-          <div class="small muted" style="margin-top:12px">
-            La búsqueda te enseñará qué hacer con la consola del navegador.
-          </div>
-        </div>
-      `);
+      }, "No es esa. Mira el título del commit.", "");
     }
 
     function renderStep2(app) {
       app.innerHTML = `
         ${playerHeader()}
         <h2>Tercera pista</h2>
-        <p>Has encontrado una palabra. Ahora toca conseguir otra.</p>
-        <p class="muted">La pista anterior te lleva a una búsqueda. Descubre qué hacer allí y vuelve aquí con el resultado.</p>
+        <p>A veces, si quieres avanzar, has de cambiar las cosas.</p>
+        <p class="muted">Busca qué hacer con la consola del navegador y vuelve aquí con el resultado.</p>
+        <div style="margin:18px 0">
+          <a class="button secondary" href="${GOOGLE_SEARCH_URL}" target="_blank" rel="noopener noreferrer">Buscar la siguiente pista</a>
+        </div>
         ${answerBox("communityAnswer", "Resultado del comando")}
         ${progressMarkup()}
       `;
       bindAnswer("communityAnswer", "comunidad", () => {
         setStep(3);
-      }, "Ese no es el resultado. Ejecuta el comando exactamente.", `
-        <div class="hint">
-          Correcto. La siguiente pista está aquí:
-          <div style="margin-top:12px">
-            <a class="button secondary" href="${GOOGLE_DOC_URL}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-          </div>
-          <div class="small muted" style="margin-top:12px">No necesitas iniciar sesión para seguir el juego.</div>
-        </div>
-      `);
+      }, "Ese no es el resultado. Ejecuta el comando exactamente.", "");
     }
 
     function renderStep3(app) {
       app.innerHTML = `
         ${playerHeader()}
         <h2>Cuarta pista</h2>
-        <p>El documento contiene algo que no está dentro de su texto.</p>
-        <p class="muted">Mira con quién está compartido y busca la respuesta escondida en esa información.</p>
+        <div style="margin:18px 0">
+          <a class="button secondary" href="${GOOGLE_DOC_URL}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
+        </div>
         ${answerBox("volarAnswer", "Palabra que has encontrado")}
         ${progressMarkup()}
       `;
       bindAnswer("volarAnswer", "volar", () => {
         setStep(4);
-      }, "No es esa. Fíjate en la dirección de correo.", `
-        <div class="hint">
-          Sí. Vuelve a esta página y continúa con la parte final.
-        </div>
-      `);
+      }, "No es esa. Mira con quién está compartido el documento.", "");
     }
 
     function renderStep4(app) {
@@ -546,20 +521,7 @@
         }
 
         if (value === normalize(expected)) {
-          message.className = "message success";
-          message.textContent = "Correcto.";
-          input.disabled = true;
-          button.disabled = true;
-
-          // Mostramos el mensaje antes de avanzar para que el cambio de fase no sea brusco.
-          const card = document.getElementById("app");
-          if (extraHtml) {
-            const holder = document.createElement("div");
-            holder.innerHTML = extraHtml;
-            card.appendChild(holder.firstElementChild || holder);
-          }
-
-          setTimeout(onCorrect, extraHtml ? 850 : 250);
+          onCorrect();
         } else {
           message.className = "message error";
           message.textContent = errorText;
