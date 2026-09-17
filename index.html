@@ -263,8 +263,8 @@
   </main>
 
   <script>
-    const STORAGE_KEY = "0414_progress_v1";
-    const TOTAL_STEPS = 5;
+    const STORAGE_KEY = "0414_progress_v2";
+    const TOTAL_STEPS = 4;
 
     const GITHUB_URL = "https://github.com/WillyOP12/0414";
     const GOOGLE_DOC_URL = "https://docs.google.com/document/d/1WfkiPf9Flhk_duasYlVIWGof1qdIpn6MSIQJaZHysR4/edit?usp=sharing";
@@ -371,7 +371,7 @@
           <p>Este mensaje no estaba destinado a cualquiera.</p>
           <p class="muted">Antes de empezar, identifícate.</p>
           <div class="input-row">
-            <input id="nameInput" maxlength="40" autocomplete="off" placeholder="Nombre" />
+            <input id="nameInput" maxlength="40" autocomplete="off" placeholder="Apodo" />
             <button type="button" id="startBtn">Continuar</button>
           </div>
           <div class="message" id="name-message"></div>
@@ -386,12 +386,10 @@
       if (state.step === 0) {
         renderStep0(app);
       } else if (state.step === 1) {
-        renderStep1(app);
-      } else if (state.step === 2) {
         renderStep2(app);
-      } else if (state.step === 3) {
+      } else if (state.step === 2) {
         renderStep3(app);
-      } else if (state.step === 4) {
+      } else if (state.step === 3) {
         renderStep4(app);
       } else {
         renderFinal(app);
@@ -404,7 +402,7 @@
       const name = input.value.trim();
       if (!name) {
         message.className = "message error";
-        message.textContent = "Necesito un nombre.";
+        message.textContent = "Necesito un apodo.";
         return;
       }
       state.playerName = name;
@@ -419,61 +417,42 @@
         <h2>Primera pista</h2>
         <p>Hay un mensaje protegido.</p>
         <div class="hint">
-          <strong>8²--A veces hemos de aprender a establecer una <b>base</b></strong>
+          <strong>[8²]--A veces hemos de aprender a establecer una <b>[base]</b></strong>
         </div>
         <div class="cipher">${BASE64_CLUE}</div>
-        <p class="muted small">La frase de arriba te indica cómo debes leer la cadena.</p>
-        ${answerBox("base64Answer", "Palabra que te pide la pista")}
+        <p>Descifra la cadena.</p>
+        ${answerBox("libertadAnswer", "Respuesta")}
         ${progressMarkup()}
       `;
-      bindAnswer("base64Answer", FIRST_ANSWER, () => {
+      bindAnswer("libertadAnswer", FIRST_ANSWER, () => {
         setStep(1);
-      }, "No es esa. Descifra la cadena y sigue la pista.", "");
-    }
-
-    function renderStep1(app) {
-      app.innerHTML = `
-        ${playerHeader()}
-        <h2>Segunda pista</h2>
-        <p>Busca en el repositorio el título del commit que contiene la palabra que necesitas.</p>
-        ${answerBox("libertadAnswer", "Palabra encontrada")}
-        ${progressMarkup()}
-      `;
-      bindAnswer("libertadAnswer", "libertad", () => {
-        setStep(2);
-      }, "No es esa. Mira el título del commit.", "");
+      }, "No es esa.", "");
     }
 
     function renderStep2(app) {
       app.innerHTML = `
         ${playerHeader()}
         <h2>Tercera pista</h2>
-        <p>A veces, si quieres avanzar, has de cambiar las cosas.</p>
-        <p class="muted">Busca qué hacer con la consola del navegador y vuelve aquí con el resultado.</p>
-        <div style="margin:18px 0">
-          <a class="button secondary" href="${GOOGLE_SEARCH_URL}" target="_blank" rel="noopener noreferrer">Buscar la siguiente pista</a>
-        </div>
-        ${answerBox("communityAnswer", "Resultado del comando")}
+        <p><a href="${GOOGLE_SEARCH_URL}" target="_blank" rel="noopener noreferrer">A veces, si quieres avanzar, has de cambiar las cosas.</a></p>
+        ${answerBox("communityAnswer", "Respuesta")}
         ${progressMarkup()}
       `;
       bindAnswer("communityAnswer", "comunidad", () => {
         setStep(3);
-      }, "Ese no es el resultado. Ejecuta el comando exactamente.", "");
+      }, "Ese no es el resultado.", "");
     }
 
     function renderStep3(app) {
       app.innerHTML = `
         ${playerHeader()}
         <h2>Cuarta pista</h2>
-        <div style="margin:18px 0">
-          <a class="button secondary" href="${GOOGLE_DOC_URL}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-        </div>
-        ${answerBox("volarAnswer", "Palabra que has encontrado")}
+        <p><a href="${GOOGLE_DOC_URL}" target="_blank" rel="noopener noreferrer">${GOOGLE_DOC_URL}</a></p>
+        ${answerBox("volarAnswer", "Respuesta")}
         ${progressMarkup()}
       `;
       bindAnswer("volarAnswer", "volar", () => {
         setStep(4);
-      }, "No es esa. Mira con quién está compartido el documento.", "");
+      }, "No es esa.", "");
     }
 
     function renderStep4(app) {
@@ -491,7 +470,7 @@
       `;
       bindAnswer("finalAnswer", "coda", () => {
         setStep(5);
-      }, "Casi. Busca un cifrado que invierta el alfabeto.", "");
+      }, "Casi.", "");
     }
 
     function renderFinal(app) {
