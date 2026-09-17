@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0414</title>
+  <style>
+    :root {
+      --bg: #050607;
+      --panel: rgba(13, 15, 18, 0.9);
+      --line: rgba(255,255,255,.10);
+      --text: #f2f2f2;
+      --muted: #8b9097;
+      --accent: #ffffff;
+      --danger: #ff6b6b;
+      --success: #9ee493;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(255,255,255,.06), transparent 38%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+      overflow-x: hidden;
+    }
+
+    .shell {
+      width: min(760px, 100%);
+      animation: boot .7s ease both;
+    }
+
+    @keyframes boot {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: clamp(22px, 5vw, 42px);
+      box-shadow: 0 24px 70px rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+    }
+
+    h1, h2 {
+      margin: 0 0 12px;
+      font-weight: 650;
+      letter-spacing: -.025em;
+    }
+
+    h1 { font-size: clamp(34px, 7vw, 58px); }
+    h2 { font-size: clamp(24px, 4vw, 34px); }
+
+    p {
+      color: #c7cbd1;
+      line-height: 1.65;
+      margin: 10px 0;
+    }
+
+    .muted { color: var(--muted); }
+
+    .mono, code, pre, .cipher {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    .cipher {
+      border: 1px solid var(--line);
+      background: #090b0d;
+      padding: 18px;
+      border-radius: 12px;
+      overflow-wrap: anywhere;
+      line-height: 1.65;
+      margin: 22px 0;
+      color: #f7f7f7;
+      font-size: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: #090b0d;
+      color: var(--text);
+      border-radius: 11px;
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus {
+      border-color: rgba(255,255,255,.35);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.05);
+    }
+
+    button, .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border: 0;
+      border-radius: 11px;
+      padding: 13px 17px;
+      font: inherit;
+      font-weight: 650;
+      text-decoration: none;
+      cursor: pointer;
+      background: #f2f2f2;
+      color: #080808;
+      transition: transform .15s ease, opacity .15s ease, background .15s ease;
+    }
+
+    button:hover, .button:hover { transform: translateY(-1px); }
+    button:active, .button:active { transform: translateY(0); }
+    button.secondary, .button.secondary {
+      background: #16191d;
+      color: #f2f2f2;
+      border: 1px solid var(--line);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .message {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .error { color: var(--danger); }
+    .success { color: var(--success); }
+
+    .progress-wrap {
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .progress {
+      height: 4px;
+      background: #171a1d;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: #f1f1f1;
+      transition: width .35s ease;
+    }
+
+    .hint {
+      margin-top: 18px;
+      padding: 14px 15px;
+      border: 1px dashed rgba(255,255,255,.15);
+      background: rgba(255,255,255,.02);
+      border-radius: 11px;
+      color: #c4c8cd;
+    }
+
+    .small {
+      font-size: 13px;
+    }
+
+    .final {
+      text-align: center;
+      padding-block: 54px;
+    }
+
+    .final .sig {
+      margin-top: 26px;
+      font-family: Georgia, serif;
+      font-size: 28px;
+      letter-spacing: .08em;
+    }
+
+    .hidden { display: none !important; }
+
+    a { color: #fff; }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      color: #676c73;
+      font-size: 11px;
+    }
+
+    .footer button {
+      padding: 0;
+      background: none;
+      border: none;
+      color: #676c73;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 560px) {
+      .input-row { flex-direction: column; }
+      .input-row button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <span>ARCHIVO</span>
+      <span>0414</span>
+    </div>
+
+    <section class="card" id="app"></section>
+
+    <div class="footer">
+      <span id="playerLabel"></span>
+      <button id="resetBtn" type="button">Borrar progreso</button>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "0414_progress_v1";
+    const TOTAL_STEPS = 5;
+
+    const GITHUB_URL = "https://github.com/WillyOP12/0414";
+    const GOOGLE_DOC_URL = "https://docs.google.com/document/d/1WfkiPf9Flhk_duasYlVIWGof1qdIpn6MSIQJaZHysR4/edit?usp=sharing";
+
+    // Base64 (UTF-8) del texto exacto solicitado.
+    const BASE64_CLUE = "OMKyLS1BIHZlY2VzIGhlbW9zIGRlIGFwcmVuZGVyIGEgZXN0YWJsZWNlciB1bmEgYmFzZQ==";
+    const BASE64_ANSWER = "8²--A veces hemos de aprender a establecer una base";
+
+    // Comando para ejecutar en la consola del navegador.
+    const CONSOLE_COMMAND = `console.log(String.fromCharCode(99,111,109,117,110,105,100,97,100))`;
+    const GOOGLE_SEARCH_URL = "https://www.google.com/search?q=" + encodeURIComponent("ctrl mayus c y despues " + CONSOLE_COMMAND);
+
+    // Atbash: XLWZ -> CODA
+    const FINAL_CIPHER = "XLWZ";
+
+    const defaultState = {
+      playerName: "",
+      step: 0,
+      started: false
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...defaultState };
+        return { ...defaultState, ...JSON.parse(raw) };
+      } catch {
+        return { ...defaultState };
+      }
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      render();
+    }
+
+    function normalize(value) {
+      return value
+        .trim()
+        .replace(/\s+/g, " ")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function setStep(step) {
+      state.step = Math.max(state.step, step);
+      saveState();
+    }
+
+    function progressPercent() {
+      return Math.min(100, Math.round((state.step / TOTAL_STEPS) * 100));
+    }
+
+    function progressMarkup() {
+      const percent = progressPercent();
+      return `
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span>Progreso</span>
+            <span>${state.step}/${TOTAL_STEPS}</span>
+          </div>
+          <div class="progress"><span style="width:${percent}%"></span></div>
+        </div>
+      `;
+    }
+
+    function playerHeader() {
+      return state.playerName
+        ? `<p class="small muted">Jugador: <span class="mono">${escapeHtml(state.playerName)}</span></p>`
+        : "";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function answerBox(id, placeholder, buttonText = "Continuar") {
+      return `
+        <div class="input-row">
+          <input id="${id}" autocomplete="off" spellcheck="false" placeholder="${placeholder}" />
+          <button type="button" data-submit="${id}">${buttonText}</button>
+        </div>
+        <div class="message" id="${id}-message"></div>
+      `;
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      const playerLabel = document.getElementById("playerLabel");
+      playerLabel.textContent = state.playerName ? `Jugador: ${state.playerName}` : "";
+
+      if (!state.started) {
+        app.innerHTML = `
+          <h1>ARCHIVO 0414</h1>
+          <p>Este mensaje no estaba destinado a cualquiera.</p>
+          <p class="muted">Antes de empezar, identifícate.</p>
+          <div class="input-row">
+            <input id="nameInput" maxlength="40" autocomplete="off" placeholder="Nombre" />
+            <button type="button" id="startBtn">Continuar</button>
+          </div>
+          <div class="message" id="name-message"></div>
+        `;
+        document.getElementById("startBtn").addEventListener("click", startGame);
+        document.getElementById("nameInput").addEventListener("keydown", (e) => {
+          if (e.key === "Enter") startGame();
+        });
+        return;
+      }
+
+      if (state.step === 0) {
+        renderStep0(app);
+      } else if (state.step === 1) {
+        renderStep1(app);
+      } else if (state.step === 2) {
+        renderStep2(app);
+      } else if (state.step === 3) {
+        renderStep3(app);
+      } else if (state.step === 4) {
+        renderStep4(app);
+      } else {
+        renderFinal(app);
+      }
+    }
+
+    function startGame() {
+      const input = document.getElementById("nameInput");
+      const message = document.getElementById("name-message");
+      const name = input.value.trim();
+      if (!name) {
+        message.className = "message error";
+        message.textContent = "Necesito un nombre.";
+        return;
+      }
+      state.playerName = name;
+      state.started = true;
+      state.step = 0;
+      saveState();
+    }
+
+    function renderStep0(app) {
+      app.innerHTML = `
+        ${playerHeader()}
+        <h2>Primera pista</h2>
+        <p>Hay un mensaje protegido con un sistema que probablemente ya has visto antes.</p>
+        <div class="cipher">${BASE64_CLUE}</div>
+        <p class="muted small">Descifra el mensaje y escribe exactamente lo que aparece.</p>
+        ${answerBox("base64Answer", "Texto descifrado")}
+        ${progressMarkup()}
+      `;
+      bindAnswer("base64Answer", normalize(BASE64_ANSWER), () => {
+        setStep(1);
+      }, "No parece ser esa. Comprueba la decodificación.", `
+        <div class="hint">
+          Bien. Ahora busca lo que acabas de descubrir:
+          <a href="${GITHUB_URL}" target="_blank" rel="noopener noreferrer">repositorio 0414</a>.
+          <div class="small muted" style="margin-top:8px">Busca el commit cuyo título sea la palabra que necesitas.</div>
+        </div>
+      `);
+    }
+
+    function renderStep1(app) {
+      app.innerHTML = `
+        ${playerHeader()}
+        <h2>Segunda pista</h2>
+        <p>En el repositorio hay más de una cosa que mirar.</p>
+        <p class="muted">El título de un commit contiene la palabra que buscas.</p>
+        ${answerBox("libertadAnswer", "Palabra encontrada")}
+        ${progressMarkup()}
+      `;
+      bindAnswer("libertadAnswer", "libertad", () => {
+        setStep(2);
+      }, "No es esa. Mira el título del commit.", `
+        <div class="hint">
+          <strong>A veces, si quieres avanzar, has de cambiar las cosas.</strong>
+          <div style="margin-top:12px">
+            <a class="button secondary" href="${GOOGLE_SEARCH_URL}" target="_blank" rel="noopener noreferrer">Buscar la siguiente pista</a>
+          </div>
+          <div class="small muted" style="margin-top:12px">
+            La búsqueda te enseñará qué hacer con la consola del navegador.
+          </div>
+        </div>
+      `);
+    }
+
+    function renderStep2(app) {
+      app.innerHTML = `
+        ${playerHeader()}
+        <h2>Tercera pista</h2>
+        <p>Has encontrado una palabra. Ahora toca conseguir otra.</p>
+        <p class="muted">La pista anterior te lleva a una búsqueda. Descubre qué hacer allí y vuelve aquí con el resultado.</p>
+        ${answerBox("communityAnswer", "Resultado del comando")}
+        ${progressMarkup()}
+      `;
+      bindAnswer("communityAnswer", "comunidad", () => {
+        setStep(3);
+      }, "Ese no es el resultado. Ejecuta el comando exactamente.", `
+        <div class="hint">
+          Correcto. La siguiente pista está aquí:
+          <div style="margin-top:12px">
+            <a class="button secondary" href="${GOOGLE_DOC_URL}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
+          </div>
+          <div class="small muted" style="margin-top:12px">No necesitas iniciar sesión para seguir el juego.</div>
+        </div>
+      `);
+    }
+
+    function renderStep3(app) {
+      app.innerHTML = `
+        ${playerHeader()}
+        <h2>Cuarta pista</h2>
+        <p>El documento contiene algo que no está dentro de su texto.</p>
+        <p class="muted">Mira con quién está compartido y busca la respuesta escondida en esa información.</p>
+        ${answerBox("volarAnswer", "Palabra que has encontrado")}
+        ${progressMarkup()}
+      `;
+      bindAnswer("volarAnswer", "volar", () => {
+        setStep(4);
+      }, "No es esa. Fíjate en la dirección de correo.", `
+        <div class="hint">
+          Sí. Vuelve a esta página y continúa con la parte final.
+        </div>
+      `);
+    }
+
+    function renderStep4(app) {
+      app.innerHTML = `
+        ${playerHeader()}
+        <h2>Última prueba</h2>
+        <p>Ya solo queda descifrar el mensaje.</p>
+        <div class="cipher">${FINAL_CIPHER}</div>
+        <div class="hint">
+          <strong>Pista:</strong> el principio se encuentra al final.<br>
+          <span class="muted small">Piensa en el alfabeto y en qué pasa cuando A se convierte en Z.</span>
+        </div>
+        ${answerBox("finalAnswer", "Respuesta final")}
+        ${progressMarkup()}
+      `;
+      bindAnswer("finalAnswer", "coda", () => {
+        setStep(5);
+      }, "Casi. Busca un cifrado que invierta el alfabeto.", "");
+    }
+
+    function renderFinal(app) {
+      app.innerHTML = `
+        <div class="final">
+          <div class="small muted mono">ARCHIVO 0414</div>
+          <h1 style="margin-top:12px">ACCESO CONCEDIDO</h1>
+          <p>${escapeHtml(state.playerName)}, has completado el archivo.</p>
+          <p class="muted">No hay nada más que buscar.</p>
+          <div class="sig">0414</div>
+          ${progressMarkup()}
+        </div>
+      `;
+    }
+
+    function bindAnswer(inputId, expected, onCorrect, errorText, extraHtml) {
+      const input = document.getElementById(inputId);
+      const button = document.querySelector(`[data-submit="${inputId}"]`);
+      const message = document.getElementById(`${inputId}-message`);
+
+      const submit = () => {
+        const value = normalize(input.value);
+        if (!value) {
+          message.className = "message error";
+          message.textContent = "Escribe una respuesta.";
+          return;
+        }
+
+        if (value === normalize(expected)) {
+          message.className = "message success";
+          message.textContent = "Correcto.";
+          input.disabled = true;
+          button.disabled = true;
+
+          // Mostramos el mensaje antes de avanzar para que el cambio de fase no sea brusco.
+          const card = document.getElementById("app");
+          if (extraHtml) {
+            const holder = document.createElement("div");
+            holder.innerHTML = extraHtml;
+            card.appendChild(holder.firstElementChild || holder);
+          }
+
+          setTimeout(onCorrect, extraHtml ? 850 : 250);
+        } else {
+          message.className = "message error";
+          message.textContent = errorText;
+        }
+      };
+
+      button.addEventListener("click", submit);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submit();
+      });
+    }
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      const ok = confirm("¿Borrar el nombre y todo el progreso de este dispositivo?");
+      if (!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = { ...defaultState };
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
